@@ -86,7 +86,7 @@ contract TAO_NFT is ERC721 {
     event GuildClaimed(uint indexed starting_id, uint indexed ending_id);
 
     /*///////////////////////////////////////////////////////////////
-                                MINT
+                                MINTING
     //////////////////////////////////////////////////////////////*/
 
     /// @notice mints single nft
@@ -197,7 +197,7 @@ contract TAO_NFT is ERC721 {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice transfers nft from guild's treasury
-    guildTransfer(
+    function guildTransfer(
         address to,
         uint _id,
         uint tier_index
@@ -219,12 +219,31 @@ contract TAO_NFT is ERC721 {
                                 SOULBOUND
     //////////////////////////////////////////////////////////////*/
 
-    function transferFrom(
+    function safeTransferFrom(
         address from,
         address to,
-        uint256 id
+        uint256 _id
     ) public virtual override {
-        revert("SOULBOUND");
+        if (soulbound) {
+            revert("SOULBOUND");
+        } else {
+            super.transferFrom(from, to, _id);
+        }
+        
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 _id,
+        bytes memory data
+    ) public virtual override {
+        if (soulbound) {
+            revert("SOULBOUND");
+        } else {
+            super.transferFrom(from, to, _id, data);
+        }
+        
     }
 
 }
