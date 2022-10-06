@@ -98,7 +98,8 @@ contract TAO_NFT is ERC721 {
         // save tiers to memory
         tier[] memory _tiers = tiers;
 
-        require(value >= tiers[tiers.length - 1].minimum, "MINIMUM_UNMET");
+        // note: can't underflow, there must be at least 1 tier
+        unchecked { require(value >= _tiers[_tiers.length - 1].minimum, "MINIMUM_UNMET"); }
 
         // increment id & save to memory
         uint _id = ++id;
@@ -147,6 +148,7 @@ contract TAO_NFT is ERC721 {
         string memory uri;
 
         // select lowest tier uri
+        // note: can't underflow, there must be at least 1 tier
         unchecked { uri = _tiers[_tiers.length - 1].uri; }
 
         // save id to memory
