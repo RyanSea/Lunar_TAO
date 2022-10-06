@@ -227,7 +227,7 @@ contract TAO_NFT is ERC721 {
         if (soulbound) {
             revert("SOULBOUND");
         } else {
-            super.transferFrom(from, to, _id);
+            super.safeTransferFrom(from, to, _id);
         }
         
     }
@@ -236,12 +236,12 @@ contract TAO_NFT is ERC721 {
         address from,
         address to,
         uint256 _id,
-        bytes memory data
+        bytes calldata data
     ) public virtual override {
         if (soulbound) {
             revert("SOULBOUND");
         } else {
-            super.transferFrom(from, to, _id, data);
+            super.safeTransferFrom(from, to, _id, data);
         }
         
     }
