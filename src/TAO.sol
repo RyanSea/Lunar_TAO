@@ -128,10 +128,8 @@ contract TAO_NFT is ERC721 {
     }
 
     /// @notice batch-mints multiple NFT's to guild
-    function guildClaim(uint amount, address to) public returns (bool success) {
+    function guildClaim(uint amount) public returns (bool success) {
         require(msg.sender == guild, "NOT_GUILD");
-
-        require(to == guild || balanceOf(to) == 0, "ALREADY_INITIATED");
 
         // save reserve to memory
         uint _reserve = reserve;
@@ -169,6 +167,64 @@ contract TAO_NFT is ERC721 {
         success = true;
 
         emit GuildClaimed(_id - amount + 1, _id);
+    }
+
+    /// @notice mint's nft from guild's reserve to another account
+    function guildMint(address to, uint tier_index) public {
+        require(msg.sender == guild, "NOT_GUILD");
+
+        require(balanceOf(to) == 0, "ALREADY_INITIATED");
+
+        require(reserve >= 1, "INSUFFICIENT_RESERVE");
+
+        --reserve;
+
+        // get uri from tier_index
+        string memory uri = tiers[tier_index].uri;
+
+        uint _id;
+
+        // increment id and save to memory
+        unchecked { _id = ++id; }
+
+        _mint(to, _id);
+
+        tokenURI[_id] = uri;
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                                TRANSFER
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice transfers nft from guild's treasury
+    guildTransfer(
+        address to,
+        uint _id,
+        uint tier_index
+    ) public {
+        require(msg.sender == guild, "NOT_GUILD");
+
+        require(balanceOf(to) == 0, "ALREADY_INITIATED");
+
+        // get uri from tier index
+        string memory uri = tiers[tier_index].uri;
+
+        // set new uri
+        tokenURI[_id] = uri;
+
+        super.safeTransferFrom(msg.sender, to, _id);
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                                SOULBOUND
+    //////////////////////////////////////////////////////////////*/
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 id
+    ) public virtual override {
+        revert("SOULBOUND");
     }
 
 }
