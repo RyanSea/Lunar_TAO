@@ -3,18 +3,19 @@ pragma solidity ^0.8.13;
 
 import "./TAO.sol";
 
+/// @notice buying contract for TAO NFT's
 contract Initiation {
 
     /*///////////////////////////////////////////////////////////////
-                                EVENT
-    //////////////////////////////////////////////////////////////*/
+                                  EVENT
+    ///////////////////////////////////////////////////////////////*/
 
     event Initiated(address indexed to, initiation[] order);
 
     /*///////////////////////////////////////////////////////////////
                                 INITIATION
-    //////////////////////////////////////////////////////////////*/
-
+    ///////////////////////////////////////////////////////////////*/
+    
     /// @notice TAO nft purchase
     struct initiation {
         TAO_NFT tao;
@@ -32,7 +33,7 @@ contract Initiation {
         for (uint i; i < orderLength; ) {
             _initiation = order[i];
 
-            unchecked { total += _initiation.amount; }
+            total += _initiation.amount; 
 
             _initiation.tao.mint(msg.sender, _initiation.amount);
 

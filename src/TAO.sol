@@ -6,6 +6,7 @@ import "solmate/tokens/ERC721.sol";
 
 import "forge-std/Test.sol";
 
+/// @notice TAO NFT's
 contract TAO_NFT is ERC721 {
     
     /*///////////////////////////////////////////////////////////////
@@ -45,13 +46,9 @@ contract TAO_NFT is ERC721 {
         require(_tiers.length > 0, "EMPTY_TIERS");
 
         soulbound = _soulbound;
-
         max_total = _max_total;
-
         initiator = _initatior;
-
         reserve = _reserve;
-
         guild = _guild;
          
         for (uint i; i < _tiers.length; ) {
@@ -79,7 +76,7 @@ contract TAO_NFT is ERC721 {
 
     /*///////////////////////////////////////////////////////////////
                                 EVENTS
-    //////////////////////////////////////////////////////////////*/
+    ///////////////////////////////////////////////////////////////*/
 
     event Minted(address indexed to, uint indexed id, uint value);  
 
@@ -87,7 +84,7 @@ contract TAO_NFT is ERC721 {
 
     /*///////////////////////////////////////////////////////////////
                                 MINTING
-    //////////////////////////////////////////////////////////////*/
+    ///////////////////////////////////////////////////////////////*/
 
     /// @notice mints single nft
     function mint(address to, uint value) public returns (bool success) {
@@ -175,6 +172,7 @@ contract TAO_NFT is ERC721 {
 
         require(balanceOf(to) == 0, "ALREADY_INITIATED");
 
+        // question is this necessary since < 0 will revert
         require(reserve >= 1, "INSUFFICIENT_RESERVE");
 
         --reserve;
@@ -194,7 +192,7 @@ contract TAO_NFT is ERC721 {
 
     /*///////////////////////////////////////////////////////////////
                                 TRANSFER
-    //////////////////////////////////////////////////////////////*/
+    ///////////////////////////////////////////////////////////////*/
 
     /// @notice transfers nft from guild's treasury
     function guildTransfer(
@@ -217,8 +215,9 @@ contract TAO_NFT is ERC721 {
 
     /*///////////////////////////////////////////////////////////////
                                 SOULBOUND
-    //////////////////////////////////////////////////////////////*/
+    ///////////////////////////////////////////////////////////////*/
 
+    /// @notice checks for soulbound before running safeTransferFrom
     function safeTransferFrom(
         address from,
         address to,
@@ -229,9 +228,9 @@ contract TAO_NFT is ERC721 {
         } else {
             super.safeTransferFrom(from, to, _id);
         }
-        
     }
 
+    /// @notice checks for soulbound before running safeTransferFrom
     function safeTransferFrom(
         address from,
         address to,
@@ -242,8 +241,7 @@ contract TAO_NFT is ERC721 {
             revert("SOULBOUND");
         } else {
             super.safeTransferFrom(from, to, _id, data);
-        }
-        
+        } 
     }
 
 }
