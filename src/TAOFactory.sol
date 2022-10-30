@@ -13,7 +13,7 @@ contract TAOFactory {
     address immutable initiator; 
 
     constructor(address _initiator) {
-        initator = _initiator;
+        initiator = _initiator;
     }
 
     /// @notice guild => TAO[] they've deployed
@@ -28,7 +28,17 @@ contract TAOFactory {
     /*///////////////////////////////////////////////////////////////
                                 CREATION
     ///////////////////////////////////////////////////////////////*/
+    
 
+    /// @notice creates TAO.sol contract
+    /// @param name of token
+    /// @param symbol of token
+    /// @param tiers for purchasing
+    /// @param max_total supply
+    /// @param reserve for guild
+    /// @param guild address
+    /// @param blacksky address
+    /// @param soulbound bool
     function create(
         string memory name,
         string memory symbol,
@@ -36,16 +46,17 @@ contract TAOFactory {
         uint max_total,
         uint reserve, 
         address guild,
+        address blacksky,
         bool soulbound
     ) public {
         TAO tao = new TAO(
             name, 
-            _symbol,
+            symbol,
             tiers,
             initiator,
             max_total,
             reserve,
-            guild.
+            guild,
             soulbound
         );
 
@@ -58,6 +69,7 @@ contract TAOFactory {
                                 DISPLAY
     ///////////////////////////////////////////////////////////////*/
 
+    /// @notice returns all TAO's deployed by guild
     function displayTAOs(address guild) public view returns (TAO[] memory) {
         return guildDeployed[guild];
     }

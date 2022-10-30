@@ -18,7 +18,7 @@ contract Initiation {
     
     /// @notice TAO nft purchase
     struct initiation {
-        TAO_NFT tao;
+        TAO tao;
         uint amount;
     }
 
@@ -37,6 +37,8 @@ contract Initiation {
 
             _initiation.tao.mint(msg.sender, _initiation.amount);
 
+            _initiation.tao.guild().call{ value : msg.value }("");
+
             unchecked { ++i; }
         }
 
@@ -44,4 +46,6 @@ contract Initiation {
 
         emit Initiated(msg.sender, order);
     }
+
+
 }

@@ -7,7 +7,7 @@ import "solmate/tokens/ERC721.sol";
 import "forge-std/Test.sol";
 
 /// @notice TAO NFT's
-contract TAO_NFT is ERC721 {
+contract TAO is ERC721 {
     
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -32,6 +32,9 @@ contract TAO_NFT is ERC721 {
     /// @notice guild multisig
     address public guild;
 
+    /// @notice blacksky multisig
+    address public blacksky;
+
     constructor(
         string memory _name, 
         string memory _symbol,
@@ -40,6 +43,7 @@ contract TAO_NFT is ERC721 {
         uint _max_total,
         uint _reserve,
         address _guild,
+        address _blacksky,
         bool _soulbound
     ) ERC721(_name, _symbol) {
         // question: can there even be an empty _tiers?
@@ -50,6 +54,7 @@ contract TAO_NFT is ERC721 {
         initiator = _initatior;
         reserve = _reserve;
         guild = _guild;
+        blacksky = _blacksky;
          
         for (uint i; i < _tiers.length; ) {
             tiers.push(_tiers[i]);
