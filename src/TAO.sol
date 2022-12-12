@@ -16,6 +16,9 @@ contract TAO is ERC721 {
     /// @notice whether or not nft's are soulbound
     bool public immutable soulbound;
 
+    /// @notice whether or not wallets are capped to 1 NFT
+    bool public immutable wallet_cap;
+
     /// @notice max total nft's 
     uint public immutable max_total;
 
@@ -24,7 +27,7 @@ contract TAO is ERC721 {
 
     /// @notice array of tiers
     /// @dev front-end needs to sort by minimum in decending order
-    tier[] public tiers;
+    Tier[] public tiers;
 
     /// @notice initiation contract
     address public immutable initiator;
@@ -38,18 +41,20 @@ contract TAO is ERC721 {
     constructor(
         string memory _name, 
         string memory _symbol,
-        tier[] memory _tiers,
+        Tier[] memory _tiers,
         address _initatior,
         uint _max_total,
         uint _reserve,
         address _guild,
         address _blacksky,
-        bool _soulbound
+        bool _soulbound,
+        bool _wallet_cap
     ) ERC721(_name, _symbol) {
         // question: can there even be an empty _tiers?
         require(_tiers.length > 0, "EMPTY_TIERS");
 
         soulbound = _soulbound;
+        wallet_cap = _wallet_cap;
         max_total = _max_total;
         initiator = _initatior;
         reserve = _reserve;
@@ -64,7 +69,7 @@ contract TAO is ERC721 {
     }
 
     /// @notice uri tier for minimum purchase amount
-    struct tier {
+    struct Tier {
         string uri; 
         uint minimum;
     }
@@ -95,10 +100,10 @@ contract TAO is ERC721 {
     function mint(address to, uint value) public returns (bool success) {
         require(msg.sender == initiator, "NOT_INITIATOR");
 
-        require(balanceOf(to) == 0, "ALREADY_INITIATED");
+        if (wallet_cap) require(balanceOf(to) == 0, "ALREADY_INITIATED");
 
         // save tiers to memory
-        tier[] memory _tiers = tiers;
+        Tier[] memory _tiers = tiers;
 
         // note: can't underflow, there must be at least 1 tier
         unchecked { require(value >= _tiers[_tiers.length - 1].minimum, "MINIMUM_UNMET"); }
@@ -143,7 +148,7 @@ contract TAO is ERC721 {
         unchecked { reserve = _reserve - amount; }
 
         // save to tiers to memory
-        tier[] memory _tiers = tiers;
+        Tier[] memory _tiers = tiers;
 
         string memory uri;
 
@@ -247,6 +252,14 @@ contract TAO is ERC721 {
         } else {
             super.safeTransferFrom(from, to, _id, data);
         } 
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                                VIEW IMAGES
+    ///////////////////////////////////////////////////////////////*/
+
+    function viewTiers() public view returns (Tier[] memory) {
+        return tiers;
     }
 
 }

@@ -42,13 +42,13 @@ contract TAOFactory {
     function create(
         string memory name,
         string memory symbol,
-        TAO.tier[] memory tiers,
+        TAO.Tier[] memory tiers,
         uint max_total,
         uint reserve, 
         address guild,
         address blacksky,
         bool soulbound
-    ) public {
+    ) public returns (address) {
         TAO tao = new TAO(
             name, 
             symbol,
@@ -57,12 +57,15 @@ contract TAOFactory {
             max_total,
             reserve,
             guild,
+            blacksky,
             soulbound
         );
 
         guildDeployed[guild].push(tao);
 
         emit TAOCreated(guild, address(tao));
+
+        return address(tao);
     }
 
     /*///////////////////////////////////////////////////////////////
