@@ -52,6 +52,7 @@ contract Deploy is Script {
             10, 
             guild, 
             blacksky, 
+            false,
             false
         );
 

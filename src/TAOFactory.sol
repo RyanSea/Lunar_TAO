@@ -47,7 +47,8 @@ contract TAOFactory {
         uint reserve, 
         address guild,
         address blacksky,
-        bool soulbound
+        bool soulbound,
+        bool wallet_cap
     ) public returns (address) {
         TAO tao = new TAO(
             name, 
@@ -58,7 +59,8 @@ contract TAOFactory {
             reserve,
             guild,
             blacksky,
-            soulbound
+            soulbound,
+            wallet_cap
         );
 
         guildDeployed[guild].push(tao);
